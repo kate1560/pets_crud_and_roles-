@@ -3,6 +3,19 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AnimalController;
 
-Route::get('/', fn () => redirect()->route('animals.index'));
+Route::get('/', function () {
+    return redirect()->route('login');
+});
 
-Route::resource('animals', AnimalController::class);
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+])->group(function () {
+
+    Route::get('/dashboard', function () {
+        return redirect()->route('animals.index');
+    })->name('dashboard');
+
+    Route::resource('animals', AnimalController::class);
+});

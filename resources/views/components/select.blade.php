@@ -1,24 +1,36 @@
 @props([
     'label' => null,
-    'name',
     'options' => [],
-    'selected' => '',
+    'selected' => null,
 ])
 
-<div>
+<div class="space-y-1">
     @if($label)
-        <label class="block text-sm font-medium text-slate-700 mb-1">{{ $label }}</label>
+        <label class="block text-sm font-medium text-[#6B7A7A]">
+            {{ $label }}
+        </label>
     @endif
 
     <select
-        name="{{ $name }}"
         {{ $attributes->merge([
-            'class' => "w-full rounded-2xl border border-beigeBrand/70 bg-white/70 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-orangeBrand/40 focus:border-orangeBrand/70"
+            'class' => '
+                w-full rounded-2xl
+                border border-[#E5EDEB]
+                bg-[#FFFFFF]
+                px-3 py-2
+                text-sm text-[#243434]
+                outline-none
+                focus:ring-2 focus:ring-[#3FAF7A]/40
+                focus:border-[#3FAF7A]
+            '
         ]) }}
     >
-        <option value="">Selecciona…</option>
-        @foreach($options as $opt)
-            <option value="{{ $opt }}" @selected($selected === $opt)>{{ $opt }}</option>
+        <option value="">Selecciona una especie</option>
+
+        @foreach($options as $value => $text)
+            <option value="{{ $value }}" @selected($value == $selected)>
+                {{ $text }}
+            </option>
         @endforeach
     </select>
 </div>

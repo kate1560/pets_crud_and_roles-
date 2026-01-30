@@ -1,59 +1,198 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🐾 Pets CRUD - Sistema de Gestión de Mascotas
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistema web desarrollado en Laravel + Jetstream para la gestión de mascotas, con autenticación, roles de usuario y control de acceso.
 
-## About Laravel
+### El proyecto implementa un CRUD completo donde:
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+* Los usuarios normales solo pueden ver y gestionar sus propias mascotas.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+* El administrador puede ver y gestionar las mascotas de todos los usuarios.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🚀 Tecnologías utilizadas
 
-## Learning Laravel
+* Laravel 12
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+* Jetstream 
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+* Tailwind CSS
 
-## Laravel Sponsors
+* SQLite
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+* PHP 
 
-### Premium Partners
+## 👥 Roles del sistema
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+#### Usuario (user)
 
-## Contributing
+Puede:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+* Crear mascotas
 
-## Code of Conduct
+* Ver solo sus propias mascotas
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+* Editar sus mascotas
 
-## Security Vulnerabilities
+* Eliminar sus mascotas
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+#### Administrador (admin)
 
-## License
+Puede:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+* Ver todas las mascotas del sistema
+
+* Ver mascotas de todos los usuarios
+
+* Editar cualquier mascota
+
+* Eliminar cualquier mascota
+
+## 🔐 Autenticación
+
+El sistema utiliza Jetstream para:
+
+* Registro
+
+* Login
+
+* Logout
+
+* Protección de rutas con middleware
+
+Todas las rutas del CRUD están protegidas con:
+
+* auth:sanctum
+* verified   
+
+## 🧠 Lógica de negocio
+
+Asociación de mascotas a usuarios
+
+Cada mascota tiene:
+
+* user_id
+
+
+Lo que permite:
+
+* Saber quién creó cada registro.
+
+* Filtrar datos por usuario.
+
+* Permitir acceso total solo al administrador.
+
+## 🧩 Filtro por rol (core del sistema)
+
+En el controlador:
+
+public function index()
+{
+    $user = auth()->user();
+
+    if ($user->role === 'admin') {
+        $animals = Animal::paginate(10);
+    } else {
+        $animals = Animal::where('user_id', $user->id)->paginate(10);
+    }
+
+    return view('animals.index', compact('animals'));
+}
+
+* Es decir qué datos puede ver cada usuario según su rol.
+
+
+## 🗃️ Base de datos
+
+## Tabla `animals`
+
+| Campo           | Tipo        |
+|-----------------|-------------|
+| id              | integer     |
+| name            | string      |
+| species         | string      |
+| breed           | string      |
+| age             | integer     |
+| weight          | decimal     |
+| color           | string      |
+| is_vaccinated   | boolean     |
+| notes           | text        |
+| user_id         | foreign key |
+
+
+
+## 🌱 Seeders
+
+El proyecto incluye un seeder con datos de prueba:
+
+* php artisan db:seed --class=AnimalSeeder
+
+
+* Genera automáticamente mascotas de ejemplo.
+
+## 👑 Crear un administrador
+
+Desde Tinker:
+
+* php artisan tinker
+
+* $user = App\Models\User::where('email', 'admin.pets@gmail.com')->first();
+* $user->role = 'admin';
+* $user->save();
+
+## ▶️ Instalación del proyecto
+* git clone https://github.com/tu-repo/pets-crud
+* cd pets-crud
+* composer install
+* npm install
+* npm run dev
+* php artisan migrate
+* php artisan db:seed
+* php artisan serve
+
+## 📌 Funcionalidades implementadas
+
+* CRUD completo
+
+* Roles de usuario
+
+* Autenticación
+
+* Autorización por rol
+
+* Relación usuario-mascotas
+
+* Paginación
+
+* Validaciones con FormRequest
+
+* Diseño responsive con Tailwind
+
+## 🧠 Conceptos aplicados (nivel profesional)
+
+Este proyecto aplica:
+
+* Arquitectura MVC real
+
+* Control de acceso por roles
+
+* Multiusuario
+
+* Filtros por ownership (user_id)
+
+* Seguridad por middleware
+
+* Buenas prácticas Laravel
+
+## 📷 Vista general
+
+Usuario:
+
+* Solo ve sus mascotas
+
+Administrador:
+
+* Ve todas las mascotas del sistema
+
+## ✨ Estado del proyecto
+
+* Proyecto finalizado y funcional al 100%
+* Listo para presentación académica y portafolio profesional.
