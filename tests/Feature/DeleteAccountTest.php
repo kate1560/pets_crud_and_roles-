@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Jetstream\Features;
 use Laravel\Jetstream\Http\Livewire\DeleteUserForm;
 use Livewire\Livewire;
@@ -19,11 +20,15 @@ class DeleteAccountTest extends TestCase
             $this->markTestSkipped('Account deletion is not enabled.');
         }
 
-        $this->actingAs($user = User::factory()->create());
+        $user = User::factory()->create([
+            'password' => Hash::make('secret123'),
+        ]);
 
-        $component = Livewire::test(DeleteUserForm::class)
-            ->set('password', 'password')
-            ->call('deleteUser');
+        Livewire::actingAs($user)
+            ->test(DeleteUserForm::class)
+            ->set('password', 'secret123')
+            ->call('deleteUser')
+            ->assertHasNoErrors();
 
         $this->assertNull($user->fresh());
     }
@@ -34,9 +39,12 @@ class DeleteAccountTest extends TestCase
             $this->markTestSkipped('Account deletion is not enabled.');
         }
 
-        $this->actingAs($user = User::factory()->create());
+        $user = User::factory()->create([
+            'password' => Hash::make('secret123'),
+        ]);
 
-        Livewire::test(DeleteUserForm::class)
+        Livewire::actingAs($user)
+            ->test(DeleteUserForm::class)
             ->set('password', 'wrong-password')
             ->call('deleteUser')
             ->assertHasErrors(['password']);

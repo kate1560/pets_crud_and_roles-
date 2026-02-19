@@ -15,28 +15,39 @@ class DeleteTeamTest extends TestCase
 
     public function test_teams_can_be_deleted(): void
     {
-        $this->actingAs($user = User::factory()->withPersonalTeam()->create());
+        $user = User::factory()->withPersonalTeam()->create();
 
-        $user->ownedTeams()->save($team = Team::factory()->make([
+        // Team NO personal creado por el user
+        $team = Team::factory()->create([
+            'user_id' => $user->id,
             'personal_team' => false,
-        ]));
+            'name' => 'Test Team',
+        ]);
 
-        $team->users()->attach(
-            $otherUser = User::factory()->create(), ['role' => 'test-role']
-        );
+        // Otro usuario dentro del team
+        $otherUser = User::factory()->create();
+        $team->users()->attach($otherUser->id, ['role' => 'test-role']);
 
-        Livewire::test(DeleteTeamForm::class, ['team' => $team->fresh()])
-            ->call('deleteTeam');
+        Livewire::actingAs($user)
+            ->test(DeleteTeamForm::class, ['team' => $team->fresh()])
+            ->call('deleteTeam')
+            ->assertHasNoErrors();
 
         $this->assertNull($team->fresh());
-        $this->assertCount(0, $otherUser->fresh()->teams);
+
+        // Verifica que el otro usuario ya no tenga ese team
+        $this->assertDatabaseMissing('team_user', [
+            'team_id' => $team->id,
+            'user_id' => $otherUser->id,
+        ]);
     }
 
     public function test_personal_teams_cant_be_deleted(): void
     {
-        $this->actingAs($user = User::factory()->withPersonalTeam()->create());
+        $user = User::factory()->withPersonalTeam()->create();
 
-        Livewire::test(DeleteTeamForm::class, ['team' => $user->currentTeam])
+        Livewire::actingAs($user)
+            ->test(DeleteTeamForm::class, ['team' => $user->currentTeam->fresh()])
             ->call('deleteTeam')
             ->assertHasErrors(['team']);
 

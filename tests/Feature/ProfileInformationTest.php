@@ -24,13 +24,20 @@ class ProfileInformationTest extends TestCase
 
     public function test_profile_information_can_be_updated(): void
     {
-        $this->actingAs($user = User::factory()->create());
+        $user = User::factory()->create([
+            'password' => bcrypt('password')
+        ]);
+
+        $this->actingAs($user);
 
         Livewire::test(UpdateProfileInformationForm::class)
-            ->set('state', ['name' => 'Test Name', 'email' => 'test@example.com'])
+            ->set('state', [
+                'name' => 'Nuevo Nombre',
+                'email' => 'nuevo@email.com'
+            ])
             ->call('updateProfileInformation');
 
-        $this->assertEquals('Test Name', $user->fresh()->name);
-        $this->assertEquals('test@example.com', $user->fresh()->email);
+        $this->assertEquals('Nuevo Nombre', $user->fresh()->name);
+        $this->assertEquals('nuevo@email.com', $user->fresh()->email);
     }
 }

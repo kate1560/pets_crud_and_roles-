@@ -2,18 +2,16 @@
     <x-slot name="header">
         <div class="flex items-start justify-between gap-4">
             <div>
-                <h2 class="text-xl font-semibold text-gray-800 leading-tight">
-                    Catálogo de Animales
-                </h2>
-                <p class="mt-1 text-sm text-gray-500">
+                <h2 class="text-2xl font-semibold text-[#243434]">Catálogo de Animales</h2>
+                <p class="mt-2 text-sm text-[#6B7A7A]">
                     Un registro claro y ordenado ayuda a cuidar mejor cada especie: seguimiento, contexto y decisiones responsables.
                 </p>
             </div>
 
-            <div class="hidden sm:block">
+            <div class="sm:hidden">
                 <x-button
                     href="{{ route('animals.create') }}"
-                    class="bg-[#3FAF7A] hover:bg-[#2E8B62] text-white"
+                    class="bg-VetGreen hover:opacity-90 text-white"
                 >
                     + Nuevo
                 </x-button>
@@ -24,83 +22,137 @@
     <div class="py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            <x-card class="bg-white">
-                <x-table>
-                    <x-slot:head>
-                        <tr class="bg-[#CFEDE0]/70">
-                            <th class="px-4 py-3 text-left text-xs font-semibold text-[#243434]">Nombre</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold text-[#243434]">Especie</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold text-[#243434]">Raza</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold text-[#243434]">Edad</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold text-[#243434]">Vacunado</th>
-                            <th class="px-4 py-3 text-right text-xs font-semibold text-[#243434]">Acciones</th>
-                        </tr>
-                    </x-slot:head>
+            <x-card class="bg-[#FFFFFF] border border-BorderSoft">
+                <div class="hidden sm:flex justify-end">
+                    <x-button
+                        href="{{ route('animals.create') }}"
+                        class="bg-VetGreen hover:opacity-90 text-white"
+                    >
+                        + Nuevo
+                    </x-button>
+                </div>
 
-                    <x-slot:body>
-                        @forelse($animals as $animal)
-                            <tr class="border-t border-[#E5EDEB] hover:bg-[#FFF7EC]">
-                                <td class="px-4 py-3 text-sm font-medium text-[#243434]">{{ $animal->name }}</td>
-
-                                <td class="px-4 py-3 text-sm">
-                                    <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium border border-[#F3E6D6] bg-[#F3E6D6] text-[#243434]">
-                                        {{ $animal->species }}
-                                    </span>
-                                </td>
-
-                                <td class="px-4 py-3 text-sm text-[#6B7A7A]">{{ $animal->breed ?? '—' }}</td>
-                                <td class="px-4 py-3 text-sm text-[#6B7A7A]">{{ $animal->age ?? '—' }}</td>
-
-                                <td class="px-4 py-3 text-sm">
-                                    @if($animal->is_vaccinated)
-                                        <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium border border-[#CFEDE0] bg-[#CFEDE0] text-[#243434]">
-                                            Sí
-                                        </span>
-                                    @else
-                                        <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium border border-[#FADADD] bg-[#FADADD] text-[#243434]">
-                                            No
-                                        </span>
-                                    @endif
-                                </td>
-
-                                <td class="px-4 py-3 text-sm">
-                                    <div class="flex justify-end gap-2">
-                                        <x-button
-                                            variant="secondary"
-                                            href="{{ route('animals.show', $animal) }}"
-                                            class="border-[#E5EDEB] text-[#3B82F6] hover:bg-[#E6F0FF]"
-                                        >
-                                            Ver
-                                        </x-button>
-
-                                        <x-button
-                                            variant="secondary"
-                                            href="{{ route('animals.edit', $animal) }}"
-                                            class="border-[#E5EDEB] text-[#3B82F6] hover:bg-[#E6F0FF]"
-                                        >
-                                            Editar
-                                        </x-button>
-
-                                        <x-modal-confirm
-                                            title="Eliminar animal"
-                                            message="¿Seguro que deseas eliminar a '{{ $animal->name }}'? Esta acción no se puede deshacer."
-                                            action="{{ route('animals.destroy', $animal) }}"
-                                        />
-                                    </div>
-                                </td>
-                            </tr>
-                        @empty
+                <div class="mt-4 overflow-x-auto">
+                    <table class="min-w-full rounded-2xl overflow-hidden">
+                        <thead class="bg-VetGreenSoft">
                             <tr>
-                                <td colspan="6" class="px-4 py-10 text-center text-sm text-[#6B7A7A]">
-                                    No hay animales registrados aún. Crea el primero.
-                                </td>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-[#243434]">Foto</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-[#243434]">Nombre</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-[#243434]">Especie</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-[#243434]">Raza</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-[#243434]">Edad</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-[#243434]">Vacunado</th>
+
+                                @if(auth()->user()->role === 'admin')
+                                    <th class="px-4 py-3 text-left text-sm font-semibold text-[#243434]">Dueño</th>
+                                @endif
+
+                                <th class="px-4 py-3 text-right text-sm font-semibold text-[#243434]">Acciones</th>
                             </tr>
-                        @endforelse
-                    </x-slot:body>
-                </x-table>
+                        </thead>
+
+                        <tbody class="bg-[#FFFFFF]">
+                            @forelse($animals as $animal)
+                                <tr class="border-t border-BorderSoft">
+                                    <td class="px-4 py-3">
+                                        @if(!empty($animal->image_path))
+                                            <img
+                                                class="h-12 w-12 rounded-2xl object-cover border border-BorderSoft"
+                                                src="{{ asset('storage/'.$animal->image_path) }}"
+                                                alt="Foto {{ $animal->name }}"
+                                            >
+                                        @else
+                                            <div class="h-12 w-12 rounded-2xl border border-BorderSoft bg-[#FFF7EC] flex items-center justify-center text-xs text-[#6B7A7A]">
+                                                —
+                                            </div>
+                                        @endif
+                                    </td>
+
+                                    <td class="px-4 py-3 text-[#243434] font-medium">
+                                        {{ $animal->name }}
+                                    </td>
+
+                                    <td class="px-4 py-3">
+                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-VetSand text-[#243434]">
+                                            {{ $animal->species }}
+                                        </span>
+                                    </td>
+
+                                    <td class="px-4 py-3 text-[#243434]">
+                                        {{ $animal->breed ?? '—' }}
+                                    </td>
+
+                                    <td class="px-4 py-3 text-[#243434]">
+                                        {{ $animal->age ?? '—' }}
+                                    </td>
+
+                                    <td class="px-4 py-3">
+                                        @if($animal->is_vaccinated)
+                                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-VetGreenSoft text-[#243434]">
+                                                Sí
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs bg-VetRose text-[#243434]">
+                                                No
+                                            </span>
+                                        @endif
+                                    </td>
+
+                                    @if(auth()->user()->role === 'admin')
+                                        <td class="px-4 py-3 text-[#243434]">
+                                            {{ $animal->owner?->name ?? '—' }}
+                                        </td>
+                                    @endif
+
+                                    <td class="px-4 py-3">
+                                        <div class="flex justify-end gap-2">
+                                            {{-- ✅ VER --}}
+                                            <x-button
+                                                href="{{ route('animals.show', $animal) }}"
+                                                class="bg-VetSand hover:opacity-90 text-[#243434]"
+                                            >
+                                                Ver
+                                            </x-button>
+
+                                            {{-- ✅ EDITAR --}}
+                                            <x-button
+                                                href="{{ route('animals.edit', $animal) }}"
+                                                class="bg-VetBlue hover:opacity-90 text-white"
+                                            >
+                                                Editar
+                                            </x-button>
+
+                                            {{-- ✅ ELIMINAR --}}
+                                            <form method="POST" action="{{ route('animals.destroy', $animal) }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <x-button
+                                                    type="submit"
+                                                    class="bg-VetRedSoft hover:opacity-90 text-[#243434]"
+                                                    onclick="return confirm('¿Seguro que deseas eliminar este animal?')"
+                                                >
+                                                    Eliminar
+                                                </x-button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td
+                                        class="px-4 py-6 text-sm text-[#6B7A7A]"
+                                        colspan="{{ auth()->user()->role === 'admin' ? 8 : 7 }}"
+                                    >
+                                        No hay animales registrados todavía.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
 
                 <div class="mt-4">
-                    <x-pagination :paginator="$animals" />
+                    {{ $animals->links() }}
                 </div>
             </x-card>
 

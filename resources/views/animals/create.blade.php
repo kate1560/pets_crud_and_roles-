@@ -36,13 +36,30 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('animals.store') }}" class="space-y-4">
+                <form method="POST"
+                      action="{{ route('animals.store') }}"
+                      enctype="multipart/form-data"
+                      class="space-y-4">
                     @csrf
 
                     @include('animals.partials.form', [
                         'animal' => null,
                         'speciesOptions' => $speciesOptions,
                     ])
+
+                    {{-- ✅ IMAGEN (OBLIGATORIA) --}}
+                    <div class="mt-4">
+                        <label class="block text-sm text-[#6B7A7A]">Imagen (obligatoria)</label>
+                        <input
+                            type="file"
+                            name="image"
+                            required
+                            class="mt-1 w-full rounded-2xl border border-[#E5EDEB] bg-white px-3 py-2 text-sm"
+                        >
+                        @error('image')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
 
                     <div class="pt-2 flex gap-2">
                         <x-button

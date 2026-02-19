@@ -14,13 +14,24 @@ class UpdateTeamNameTest extends TestCase
 
     public function test_team_names_can_be_updated(): void
     {
-        $this->actingAs($user = User::factory()->withPersonalTeam()->create());
+        $user = User::factory()->withPersonalTeam()->create();
 
-        Livewire::test(UpdateTeamNameForm::class, ['team' => $user->currentTeam])
-            ->set(['state' => ['name' => 'Test Team']])
-            ->call('updateTeamName');
+        $this->actingAs($user);
 
-        $this->assertCount(1, $user->fresh()->ownedTeams);
-        $this->assertEquals('Test Team', $user->currentTeam->fresh()->name);
+        Livewire::test(UpdateTeamNameForm::class, [
+                'team' => $user->currentTeam,
+            ])
+            ->set('state', [
+                'name' => 'Test Team',
+            ])
+            ->call('updateTeamName')
+            ->assertHasNoErrors();
+
+        // 🔁 Refrescamos todo para validar con datos reales de BD
+        $user = $user->fresh();
+        $team = $user->currentTeam->fresh();
+
+        $this->assertCount(1, $user->ownedTeams);
+        $this->assertEquals('Test Team', $team->name);
     }
 }

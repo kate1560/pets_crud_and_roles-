@@ -16,6 +16,18 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+
+            // paleta de colores personalizada para el proyecto 
+            colors: {
+                VetCream: "#FFF7EC",
+                BorderSoft: "#E5EDEB",
+                VetGreenSoft: "#DFF3EA",
+                VetGreen: "#3FAF7A",
+                VetBlue: "#2F6FED",
+                VetRedSoft: "#FDE2E2",
+                VetSand: "#E2CFAA",
+                VetRose: "#F7C6D0",
+            },
         },
     },
 

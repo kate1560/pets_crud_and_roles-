@@ -4,13 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Animal extends Model
 {
     use HasFactory;
 
+    public const SPECIES = [
+        'Dog'     => 'Dog',
+        'Cat'     => 'Cat',
+        'Bird'    => 'Bird',
+        'Reptile' => 'Reptile',
+        'Fish'    => 'Fish',
+        'Other'   => 'Other',
+    ];
+
     protected $fillable = [
+        'user_id',
         'name',
         'species',
         'breed',
@@ -19,27 +29,11 @@ class Animal extends Model
         'color',
         'is_vaccinated',
         'notes',
-        'user_id', // MUY IMPORTANTE
+        'image_path',
     ];
 
-    protected $casts = [
-        'is_vaccinated' => 'boolean',
-        'age' => 'integer',
-        'weight' => 'decimal:2',
-    ];
-
-    public const SPECIES = [
-        'Dog' => 'Dog',
-        'Cat' => 'Cat',
-        'Bird' => 'Bird',
-        'Fish' => 'Fish',
-        'Reptile' => 'Reptile',
-        'Other' => 'Other',
-    ];
-
-    // Relación: un animal pertenece a un usuario
-    public function user()
+    public function owner(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 }
